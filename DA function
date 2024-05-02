@@ -1,0 +1,38 @@
+import numpy as np
+
+def analyze_residuals(actual, predicted):
+    """Calculate residuals and provide basic statistical analysis."""
+    residuals = actual - predicted
+    mean_residual = np.mean(residuals)
+    std_deviation = np.std(residuals)
+    return residuals, mean_residual, std_deviation
+
+def adjust_predictions(predicted, mean_residual):
+    """Adjust predictions by subtracting the mean residual."""
+    adjusted_predictions = predicted - mean_residual
+    return adjusted_predictions
+
+def update_model_with_new_data(new_actual, new_predicted, old_mean_residual):
+    """Update the model adjustment based on new data."""
+    new_residuals, new_mean_residual, _ = analyze_residuals(new_actual, new_predicted)
+    # Smoothly update the mean residual, incorporating new data
+    updated_mean_residual = (old_mean_residual + new_mean_residual) / 2
+    return updated_mean_residual
+
+# Example usage
+actual_data = np.array([100, 150, 120, 130, 140])
+predicted_data = np.array([90, 140, 110, 125, 135])
+
+# Analyze initial residuals
+residuals, mean_residual, _ = analyze_residuals(actual_data, predicted_data)
+
+# Adjust initial predictions
+adjusted_predictions = adjust_predictions(predicted_data, mean_residual)
+
+# When new data is available
+new_actual_data = np.array([145, 155])
+new_predicted_data = np.array([136, 145])
+new_mean_residual = update_model_with_new_data(new_actual_data, new_predicted_data, mean_residual)
+
+# Adjust new predictions with updated residual
+new_adjusted_predictions = adjust_predictions(new_predicted_data, new_mean_residual)
